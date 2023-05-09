@@ -1,10 +1,12 @@
 import { Post, PrismaClient } from "@prisma/client";
 import { useState } from "react";
-import { api } from "~/utils/api";
+// import { api } from "~/utils/api";
 import Image from "next/image";
-import { format } from "path";
+// import { format } from "path";
+import { useSession } from 'next-auth/react'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { createPost } from "~/server/createPost";
 
 /* Fetch all posts (in /pages/index.tsx)
 // export async function getStaticProps() {
@@ -80,6 +82,7 @@ export async function getStaticProps() {
 // console.log(JSON.stringify(posts, null, 2));
 export default function Posts({posts} : {posts: FormattedPost[]}) {
   const [message, setMessage] = useState("");
+  const { data: session, status } = useSession()
 
   function handleMessageChange(event: React.ChangeEvent<HTMLInputElement>) {
     setMessage(event.target.value);
@@ -91,6 +94,37 @@ export default function Posts({posts} : {posts: FormattedPost[]}) {
     console.log(`Mensaje enviado: ${message}`);
     setMessage("");
   }
+
+  // async function handlePublish() {
+  //   const userId = session?.user.id // obtener el ID del usuario actualmente conectado
+  //   const prisma = new PrismaClient()
+  //   const post = await prisma.post.create({
+  //     data: {
+  //       content: message,
+  //       published: true,
+  //       author: { connect: { id: userId } }
+  //     }
+  //   })
+  //   console.log(`Mensaje publicado: ${post.content}`)
+  //   setMessage('')
+  // }
+
+  // async function handlePublish() {
+  //   const userId = session?.user.id // obtener el ID del usuario actualmente conectado
+  //   const post = await createPost(message, userId) // llamar a la función createPost
+  //   console.log(`Mensaje publicado: ${post.content}`)
+  //   setMessage('')
+  // }
+
+  async function handlePublish() {
+    const userId = session?.user.id
+    if (userId) {
+      const post = await createPost(message, userId)
+      console.log(`Mensaje publicado: ${post.content}`)
+    }
+    setMessage('')
+  }
+  
 
 //   const PostsPage = ({ posts }: { posts: Post[] }) => {
     return (
@@ -109,6 +143,7 @@ export default function Posts({posts} : {posts: FormattedPost[]}) {
               <button
                   type="submit"
                   className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+                  onClick={handlePublish}
               >
                   Publicar
               </button>
@@ -118,7 +153,7 @@ export default function Posts({posts} : {posts: FormattedPost[]}) {
             <> 
               {posts.map(post => (
                 // console.log(JSON.stringify(post, null, 2)),
-                <div 
+                post.published && <div 
                 className="flex flex-row items-center justify-start bg-white/10 rounded-xl p-4 my-1 text-white hover:bg-white/20 w-10/12 mx-auto"
                 key={post.id}>
                   <Image className="rounded-full" src={post.authorImage || "/avatar.png"} width={32} height={32} alt={"avatar"}/>
