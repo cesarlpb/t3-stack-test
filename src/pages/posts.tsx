@@ -2,24 +2,69 @@ import { Post, PrismaClient } from "@prisma/client";
 import { useState } from "react";
 import { api } from "~/utils/api";
 import Image from "next/image";
+import { format } from "path";
 
-// Fetch all posts (in /pages/index.tsx)
+/* Fetch all posts (in /pages/index.tsx)
+// export async function getStaticProps() {
+//   const prisma = new PrismaClient()
+//   const posts = await prisma.post.findMany({
+//     orderBy: {
+//       createdAt: 'desc'
+//     }
+//   })
+
+//   // Formatear las fechas de creación y actualización como cadenas
+//   const formattedPosts = posts.map(post => {
+//     return {
+//       ...post,
+//       createdAt: post.createdAt.toISOString(),
+//       updatedAt: post.updatedAt.toISOString()
+//     }
+//   })
+
+//   return {
+//     props : { posts: formattedPosts }
+//   }
+  } */
+
+// Extiendo el tipo Post para incluir el authorImage:
+type FormattedPost = Post & { authorImage: string }
+interface Props {
+  formattedPosts: FormattedPost[]
+}
+
 export async function getStaticProps() {
   const prisma = new PrismaClient()
   const posts = await prisma.post.findMany({
+    include: {
+      author: true
+    },
     orderBy: {
       createdAt: 'desc'
     }
   })
 
   // Formatear las fechas de creación y actualización como cadenas
+  
+  // const formattedPosts = posts.map(post => {
+  //   console.log(JSON.stringify(post, null, 2));
+  //   return {
+  //     ...post,
+  //     createdAt: post.createdAt.toISOString(),
+  //     updatedAt: post.updatedAt.toISOString(),
+  //     authorImage: post.author?.image || '/avatar.png'
+  //   }
+  // })
+
   const formattedPosts = posts.map(post => {
-    return {
-      ...post,
-      createdAt: post.createdAt.toISOString(),
-      updatedAt: post.updatedAt.toISOString()
-    }
-  })
+      return {
+        ...post,
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString(),
+        authorImage: post.author?.image || '/avatar.png'
+      }
+    })
+  
 
   return {
     props : { posts: formattedPosts }
@@ -31,7 +76,7 @@ export async function getStaticProps() {
 // const postsQuery = api.post.getAll.useQuery();
 // const posts = postsQuery.data ?? [];
 // console.log(JSON.stringify(posts, null, 2));
-export default function Posts({posts} : {posts: Post[]}) {
+export default function Posts({posts} : {posts: FormattedPost[]}) {
   const [message, setMessage] = useState("");
 
   function handleMessageChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -70,11 +115,14 @@ export default function Posts({posts} : {posts: Post[]}) {
           <div className="mt-10 w-full">
             <> 
               {posts.map(post => (
+                // console.log(JSON.stringify(post, null, 2)),
                 <div 
                 className="flex flex-row items-center justify-start bg-white/10 rounded-xl p-4 my-1 text-white hover:bg-white/20 w-10/12 mx-auto"
                 key={post.id}>
-                  <Image src={"/avatar.png"} width={16} height={16} alt={"avatar"}/>
+                  <Image className="rounded-full" src={post.authorImage || "/avatar.png"} width={32} height={32} alt={"avatar"}/>
+                  <span className="ml-3">{post}</span>
                   <span className="ml-3">{post.content}</span>
+
                   </div>
               ))}
             </>
