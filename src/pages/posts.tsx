@@ -3,6 +3,8 @@ import { useState } from "react";
 import { api } from "~/utils/api";
 import Image from "next/image";
 import { format } from "path";
+import { formatDistanceToNow } from 'date-fns'
+import { es } from 'date-fns/locale'
 
 /* Fetch all posts (in /pages/index.tsx)
 // export async function getStaticProps() {
@@ -120,8 +122,10 @@ export default function Posts({posts} : {posts: FormattedPost[]}) {
                 className="flex flex-row items-center justify-start bg-white/10 rounded-xl p-4 my-1 text-white hover:bg-white/20 w-10/12 mx-auto"
                 key={post.id}>
                   <Image className="rounded-full" src={post.authorImage || "/avatar.png"} width={32} height={32} alt={"avatar"}/>
-                  <span className="ml-3">{post}</span>
-                  <span className="ml-3">{post.content}</span>
+                  <div className="flex flex-col">
+                  <p className="ml-3 text-xs text-slate-400">{formatDistanceToNow(new Date(post.createdAt), { addSuffix: true, locale: es })}</p>
+                  <p className="ml-3">{post.content}</p>
+                  </div>
 
                   </div>
               ))}
