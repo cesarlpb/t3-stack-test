@@ -20,15 +20,25 @@ model Example {
     updatedAt DateTime @updatedAt
 }
 
+// model Post {
+//   id        String   @id @default(cuid())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   content   String?
+//   published Boolean  @default(false)
+//   author    User     @relation("authorPosts", fields: [author_id], references: [id], onDelete: Cascade)
+//   author_id String
+// }
 model Post {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  title     String
   content   String?
-  published Boolean  @default(false)
-  author    User     @relation("authorPosts", fields: [author_id], references: [id], onDelete: Cascade)
-  author_id String
-}
+  published Boolean @default(false)
+  author    User?@relation(fields:[authorId], references:[id])
+  authorId  String?
+  }
 
 // Necessary for Next auth
 model Account {
@@ -57,16 +67,27 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// model User {
+//     id            String    @id @default(cuid())
+//     name          String?
+//     email         String?   @unique
+//     emailVerified DateTime?
+//     image         String?
+//     accounts      Account[]
+//     sessions      Session[]
+//     posts         Post[]   @relation("authorPosts")
+// }
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]   @relation("authorPosts")
-}
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?@unique
+  emailVerified DateTime?
+  image         String?
+  posts         Post[]
+  accounts      Account[]
+  sessions      Session[]
+  }
+
 
 model VerificationToken {
     identifier String
