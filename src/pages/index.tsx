@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
+// import Link from "next/link";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 
@@ -73,7 +73,7 @@ const capitalize = (s: string, i:number = 1) => {
   return (
       <div className="flex flex-col items-center justify-center gap-4 space-y-2">
         <p className="flex items-center justify-center text-center text-2xl text-white">
-          {sessionData && <span className="mr-2">Has inicido sesión como {sessionData.user?.name}</span>}
+          {sessionData && <span className="mr-2">Has iniciado sesión como {sessionData.user?.name}</span>}
           {sessionData && <Image className="rounded-full ml-2" src={sessionData.user?.image || "/avatar.png"} width={32} height={32} alt={sessionData.user?.name || "usuario"}></Image>}
         </p>
 

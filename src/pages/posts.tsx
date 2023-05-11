@@ -1,10 +1,11 @@
 import { Post, PrismaClient } from "@prisma/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSession } from 'next-auth/react'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
 import Router from 'next/router';
+import { useRouter } from 'next/router';
 
 // Extiendo el tipo Post para incluir el authorImage:
 type FormattedPost = Post & { authorImage: string }
@@ -12,6 +13,25 @@ interface Props {
   formattedPosts: FormattedPost[]
 }
 
+
+
+const URL_UPDATE_DELAY = 750;
+
+function useKeepBrowserPathUpdated() {
+  const Router = useRouter();
+
+  useEffect(() => {
+    // the timeout adds a small delay to reduce the errors logged
+    // by Next when a navigation is interrupted
+    const timeout = setTimeout(() => {
+      Router.replace('/posts');
+    }, URL_UPDATE_DELAY);
+
+    return function cleanUp() {
+      clearTimeout(timeout);
+    };
+  }, []);
+}
 export async function getStaticProps() {
   const prisma = new PrismaClient()
   const posts = await prisma.post.findMany({
@@ -39,8 +59,9 @@ export async function getStaticProps() {
 }
 
 export default function Posts({posts} : {posts: FormattedPost[]}) {
+  useKeepBrowserPathUpdated();
   const [message, setMessage] = useState("");
-  const { data: session, status } = useSession()
+  // const { data: session, status } = useSession()
 
   function handleMessageChange(event: React.ChangeEvent<HTMLInputElement>) {
     setMessage(event.target.value);
@@ -88,7 +109,7 @@ export default function Posts({posts} : {posts: FormattedPost[]}) {
                 disabled={!message}
                 type="submit"
                 className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-                onClick={() => Router.push('/posts')}
+                onClick={() => Router.replace('/posts')}
             >
                 Publicar
             </button>
