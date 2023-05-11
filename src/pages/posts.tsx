@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useSession } from 'next-auth/react'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { createPost } from "~/server/createPost";
+import Router from 'next/router';
 
 // Extiendo el tipo Post para incluir el authorImage:
 type FormattedPost = Post & { authorImage: string }
@@ -47,38 +47,48 @@ export default function Posts({posts} : {posts: FormattedPost[]}) {
     console.log(`Mensaje: ${event.target.value}`)
   }  
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  // function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  //   event.preventDefault();
+  //   console.log(`Mensaje enviado: ${message}`);
+  //   setMessage("");
+  // }
+
+  const submitData = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      const body = { message };
+      await fetch('/api/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      await Router.push('/posts');
+    } catch (error) {
+      console.error(error);
+    }
     console.log(`Mensaje enviado: ${message}`);
     setMessage("");
-  }
-
-  async function handlePublish() {
-    const userId = session?.user.id
-    if (userId) {
-      const post = await createPost(message, userId)
-      console.log(`Mensaje publicado: ${post.content}`)
-    }
-    setMessage('')
-  }
+  };
   
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
       <div className="flex flex-col items-center justify-start min-h-screen w-3/4 border-r-2 border-l-2 border-slate-400 py-5">
-        <form onSubmit={handleSubmit} className="top-0 w-full max-w-xl">
+        <form onSubmit={submitData} className="top-0 w-full max-w-xl">
             <div className="flex items-center border-b-2 border-gray-500 py-2">
             <input
                 type="text"
                 value={message}
                 onChange={handleMessageChange}
+                name="message"
                 placeholder="Escribe un mensaje..."
                 className="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
             />
 
             <button
+                disabled={!message}
                 type="submit"
                 className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-                onClick={handlePublish}
+                onClick={() => Router.push('/posts')}
             >
                 Publicar
             </button>
