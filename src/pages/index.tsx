@@ -62,10 +62,10 @@ export default Home;
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
 
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined },
-  );
+  // const { data: secretMessage } = api.example.getSecretMessage.useQuery(
+  //   undefined, // no input
+  //   { enabled: sessionData?.user !== undefined },
+  // );
 
 const capitalize = (s: string, i:number = 1) => {
   return s.charAt(0).toUpperCase() + s.slice(i)
@@ -82,14 +82,14 @@ const capitalize = (s: string, i:number = 1) => {
         </p>
 
         <p className="flex items-center justify-center text-center text-2xl text-white">
-          {secretMessage && <span>{capitalize(secretMessage, 1)}</span>}
+          {/* {secretMessage && <span>{capitalize(secretMessage, 1)}</span>} */}
         </p>
 
         <p></p>
 
         <button
           className="rounded-full bg-gray-500 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-          onClick={sessionData ? () => void signOut() : () => void signIn()}
+          onClick={sessionData ? () => void signOut() : () => void signIn("discord")}
         >
       
         {sessionData ? "Cerrar sesión" : "Iniciar sesión"}

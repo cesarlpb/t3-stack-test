@@ -1,7 +1,6 @@
 import { Post, PrismaClient } from "@prisma/client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useSession } from 'next-auth/react'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
 import Router from 'next/router';
@@ -76,18 +75,25 @@ export default function Posts({posts} : {posts: FormattedPost[]}) {
 
   const submitData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    // Obtener las cookies del cliente
+    const cookies = document.cookie;
     try {
       const body = { message };
       await fetch('/api/post', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        // headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Cookie': cookies, // Enviar las cookies en la solicitud
+        },
         body: JSON.stringify(body),
       });
       await Router.push('/posts');
     } catch (error) {
       console.error(error);
     }
-    console.log(`Mensaje enviado: ${message}`);
+    // console.log("cookies posts", cookies)
+    // console.log(`Mensaje enviado: ${message}`);
     setMessage("");
   };
   
