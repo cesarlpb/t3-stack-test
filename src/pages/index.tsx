@@ -7,8 +7,10 @@ import { use } from "react";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  
   const user = useUser();
+  const {data} = api.posts.getAll.useQuery();
+  
   return (
     <>
       <Head>
@@ -22,9 +24,14 @@ const Home: NextPage = () => {
             Test <span className="text-[hsl(280,100%,70%)]">T3</span> App
           </h1>
           <div className="flex flex-col gap-4 sm:grid-cols-2 md:gap-8">
-            <h2 className="text-3xl text-white">Iniciar sesión</h2>
+            <h2 className="text-3xl text-white">Bienvenid@ 👀</h2>
             <>{true && console.log(user)}</>
             <div>{!user.isSignedIn && <SignInButton/>}{!!user.isSignedIn && <SignOutButton/>}</div>
+          </div>
+          <div>
+            {data?.map((post) => (
+              <div key={post.id}>{post.content}</div>
+          ))}
           </div>
           
         </div>
