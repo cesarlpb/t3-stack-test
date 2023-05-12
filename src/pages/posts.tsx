@@ -24,7 +24,12 @@ const CreatePostWizard = () => {
   const {user} = useUser();
   if(!user) return null;
   return (
-    <ProfilePicture width={32} height={32}/>
+    <>
+    <div className="flex flex-row justify-between p-5 w-1/2 border-2">
+      <ProfilePicture width={48} height={48}/>
+      <input type="text" className="w-full" placeholder="Escribe algunos emojis!" />
+    </div>
+    </>
   )
 };
 const Posts: NextPage = () => {
@@ -48,12 +53,12 @@ const Posts: NextPage = () => {
             </h1>
           </a>
           <div className="flex flex-row gap-4 sm:grid-cols-2 md:gap-8">
-          <h2 className="flex flex-row items-center text-3xl text-slate-200 whitespace-pre">
-            Bienvenid@ 
-            <span className="text-[hsl(280,100%,70%)]">
-              {user && user.user?.username ? " " + user.user.username : ' '}
-            </span>👀!
-          </h2>
+            <h2 className="flex flex-row items-center text-3xl text-slate-200 whitespace-pre">
+              Bienvenid@ 
+              <span className="text-[hsl(280,100%,70%)]">
+                {user && user.user?.username ? " " + user.user.username : ' '}
+              </span>👀!
+            </h2>
           
             <div className="flex justify-center">
               {!user.isSignedIn && 
@@ -70,8 +75,9 @@ const Posts: NextPage = () => {
               </SignOutButton>}
             </div>
           </div>
+        </div>
 
-          </div>
+          <CreatePostWizard />
 
           <div className="flex flex-col items-center justify-center w-full border-white border-0">
             <h3 className="text-2xl text-slate-200 pb-2">Emojis:</h3>
