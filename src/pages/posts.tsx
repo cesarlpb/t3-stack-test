@@ -93,7 +93,7 @@ export default function Posts({posts} : {posts: FormattedPost[]}) {
       console.error(error);
     }
     // console.log("cookies posts", cookies)
-    // console.log(`Mensaje enviado: ${message}`);
+    // console.log(`Mensaje enviado: ${message}`);ex
     setMessage("");
   };
   
