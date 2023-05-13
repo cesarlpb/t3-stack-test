@@ -9,6 +9,7 @@ import { es } from "date-fns/locale";
 import Link from "next/link";
 // import { isMobile } from 'react-device-detect';
 import { useEffect, useState } from "react";
+import { LoadingPage } from "~/components/loading";
 
 const ProfilePicture = ({
   width,
@@ -75,7 +76,11 @@ const Posts: NextPage = () => {
   const user = useUser();
   if (!user) return null;
   const { data, isLoading } = api.posts.getAll.useQuery();
-
+  
+  if(isLoading){
+    return <LoadingPage />
+  }
+  
   return (
     <>
       <Head>
@@ -151,9 +156,10 @@ const Posts: NextPage = () => {
                         colSpan={isMobile ? 4 : 2}
                       />
                       <div className="col-span-8 flex flex-col ms-5">
-                        <div className="flex flex-row ms-3 ">
-                        <div className="text-xs md:text-sm text-slate-200">{`@${post.author.username}`}</div>
-                        <div className="ms-3 text-xs text-slate-400">
+                        <div className="flex flex-row ms-3">
+                        <div className="text-xs md:text-sm text-slate-200 font-thin">{`@${post.author.username}`}</div>
+                        <div className="text-xs md:text-sm text-slate-200/50 mx-2">·</div>
+                        <div className="text-xs md:text-sm text-slate-200/50">
                           {formatDistanceToNow(new Date(post.post.createdAt), {
                             addSuffix: true,
                             locale: es,

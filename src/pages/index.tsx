@@ -1,6 +1,6 @@
 import { SignOutButton } from "@clerk/clerk-react";
 import { SignInButton, useUser } from "@clerk/nextjs";
-import { Post } from "@prisma/client";
+// import { Post } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Img from "next/image";
@@ -8,30 +8,32 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 
-import { RouterOutputs, api } from "~/utils/api";
+import { api } from "~/utils/api";
+import type { RouterOutputs } from "~/utils/api";
+import { LoadingPage } from "~/components/loading";
 
-const ProfilePicture = ({ 
+const ProfilePicture = ({
   authorImgUrl,
   width = 32,
   height = 32,
   colSpan = 4,
-}: { 
-  authorImgUrl: string,
+}: {
+  authorImgUrl: string;
   width?: number;
   height?: number;
   colSpan?: number;
 }) => {
-  const { user } = useUser();
+  const { user, isLoaded: userLoaded } = useUser();
   // console.log("user:", user);
   if (!user) return null;
   return (
-    <div className="me-3">
+    <div className={`me-3 col-span-${colSpan}`}>
       <Img
         className="rounded-full"
         src={authorImgUrl || "/avatar.png"}
-        alt={user.username || "profile picture"}
+        alt={`@${user.username} profile picture` || "profile picture"}
         width={width ?? 24}
-        height={width ?? 24}
+        height={height ?? 24}
       />
     </div>
   );
@@ -45,17 +47,21 @@ const PostView = (props: PostWithUser) => {
       className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-cyan-300/30 p-4 text-2xl text-white hover:bg-white/20"
       key={post.id}
     >
-      <ProfilePicture authorImgUrl={author.profileImageUrl} width={48} height={48}/>
-      <div className="flex flex-col">
-        
+      <ProfilePicture
+        authorImgUrl={author.profileImageUrl}
+        width={48}
+        height={48}
+      />
+      <div className="flex flex-col grow border-0 ps-5">
         <div className="flex flex-row align-middle">
-        <div className="text-xs md:text-sm text-slate-200">{`@${author.username}`}</div>
-        <div className="ms-3 text-xs md:text-sm text-slate-400">
-          {formatDistanceToNow(new Date(post.createdAt), {
-            addSuffix: true,
-            locale: es,
-          })}
-        </div>
+          <div className="text-xs md:text-sm text-slate-200 font-thin">{`@${author.username}`}</div>
+          <div className="text-xs md:text-sm text-slate-200/50 mx-2">·</div>
+          <div className="ms-3 text-xs text-slate-400 md:text-sm align-baseline">
+            {formatDistanceToNow(new Date(post.createdAt), {
+              addSuffix: true,
+              locale: es,
+            })}
+          </div>
         </div>
         <div className="">{post.content}</div>
       </div>
@@ -63,10 +69,36 @@ const PostView = (props: PostWithUser) => {
   );
 };
 
-const Home: NextPage = () => {
-  const user = useUser();
-  const { data, isLoading } = api.posts.getAll.useQuery();
+const Feed = () => {
+  const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
   const previewData = data?.slice(0, 3) || [];
+  
+    if(!postsLoading) return <LoadingPage />;
+
+    if(!previewData){
+      return <div>Vaya... esos emojis no llegan🫥</div>
+    }
+
+    if(previewData){
+      return(
+      <>
+      {previewData?.map((postWithAuthor) => (
+        <PostView {...postWithAuthor} key={postWithAuthor.post.id} />
+      ))}
+      </>
+      );
+    }
+    
+};
+
+const Home: NextPage = () => {
+  const { user, isLoaded: userLoaded} = useUser();
+  // Empieza a cargar los posts ASAP
+  const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
+  const previewData = data?.slice(0, 3) || [];
+
+  // Se retorna un div vacío si el user no está cargado todavía
+  if(!userLoaded){ return <div/> }
 
   return (
     <>
@@ -82,7 +114,7 @@ const Home: NextPage = () => {
         {/* Navbar */}
         <div
           className="container-fluid flex w-full flex-col 
-        justify-center gap-12 px-0 py-8 lg:items-center"
+        justify-center gap-12 px-0 py-24 lg:py-8 lg:items-center"
         >
           <div
             className="fixed top-0 flex 
@@ -101,20 +133,20 @@ const Home: NextPage = () => {
               <h2 className="flex flex-row items-center whitespace-pre text-3xl text-slate-200">
                 Bienvenid@
                 <span className="text-[hsl(280,100%,70%)]">
-                  {user && user.user?.username ? " " + user.user.username : " "}
+                  {user && user?.username ? " " + user.username : " "}
                 </span>
                 👀!
               </h2>
             </div>
             <div className="flex justify-center lg:justify-end">
-              {!user.isSignedIn && (
+              {!user && (
                 <SignInButton>
                   <button className="rounded-full bg-gray-500 px-10 py-3 text-center font-semibold text-slate-200 no-underline transition hover:bg-white/40">
                     Iniciar sesión
                   </button>
                 </SignInButton>
               )}
-              {!!user.isSignedIn && (
+              {!!user && (
                 <SignOutButton>
                   <button className="rounded-full bg-gray-500 px-10 py-3 text-center font-semibold text-slate-200 no-underline transition hover:bg-white/20">
                     Cerrar sesión
@@ -130,13 +162,14 @@ const Home: NextPage = () => {
             My <span className="text-[hsl(280,100%,70%)]">Emojer</span> App 😐
           </h1>
           <div className="flex flex-col gap-4 sm:grid-cols-2 md:gap-8"></div>
-          <div className="flex w-3/4 lg:w-1/2 flex-col items-center justify-center border-0 border-white">
+          <div className="flex w-3/4 flex-col items-center justify-center border-0 border-white lg:w-1/2">
             <h3 className="pb-2 text-2xl text-slate-200">Últimos posts:</h3>
             {previewData &&
               previewData?.map((postWithAuthor) => (
                 <PostView {...postWithAuthor} key={postWithAuthor.post.id} />
               ))}
-            {isLoading && (
+            {/* Solo aparece mientras se están cargando los posts */}
+            {postsLoading && (
               <div className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
                 Cargando emojis 🙈...
               </div>
