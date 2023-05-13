@@ -10,6 +10,7 @@ import Link from "next/link";
 // import { isMobile } from 'react-device-detect'; // librería device-detect para comprobar userAgent de dispositivo
 import { useEffect, useState } from "react";
 import { LoadingPage } from "~/components/loading";
+import { Feed } from "~/components/feed";
 
 const ProfilePicture = ({
   width,
@@ -145,31 +146,33 @@ const Posts: NextPage = () => {
             <div className="w-10/12 border-0 md:w-1/2">
               <div className="max-h-[400px] overflow-y-auto">
                 {data &&
-                  data?.map((post) => (
-                    <div
-                      className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-cyan-300/30 p-4 text-2xl text-white hover:bg-white/20"
-                      key={post.post.id}
-                    >
-                      <ProfilePicture
-                        width={isMobile ? 48 : 48}
-                        height={isMobile ? 48 : 48}
-                        colSpan={isMobile ? 4 : 2}
-                      />
-                      <div className="col-span-8 flex flex-col ms-5">
-                        <div className="flex flex-row ms-3">
-                        <div className="text-xs md:text-sm text-slate-200 font-thin">{post?.author ? `@${post.author.username || ""}` : ""}</div>
-                        <div className="text-xs md:text-sm text-slate-200/50 mx-2">·</div>
-                        <div className="text-xs md:text-sm text-slate-200/50">
-                          {formatDistanceToNow(new Date(post.post.createdAt), {
-                            addSuffix: true,
-                            locale: es,
-                          })}
-                        </div>
-                        </div>
-                        <span className="ms-3">{post.post.content}</span>
-                      </div>
-                    </div>
-                  ))}
+                  // data?.map((post) => (
+                  //   <div
+                  //     className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-cyan-300/30 p-4 text-2xl text-white hover:bg-white/20"
+                  //     key={post.post.id}
+                  //   >
+                  //     <ProfilePicture
+                  //       width={isMobile ? 48 : 48}
+                  //       height={isMobile ? 48 : 48}
+                  //       colSpan={isMobile ? 4 : 2}
+                  //     />
+                  //     <div className="col-span-8 flex flex-col ms-5">
+                  //       <div className="flex flex-row ms-3">
+                  //       <div className="text-xs md:text-sm text-slate-200 font-thin">{post?.author ? `@${post.author.username || ""}` : ""}</div>
+                  //       <div className="text-xs md:text-sm text-slate-200/50 mx-2">·</div>
+                  //       <div className="text-xs md:text-sm text-slate-200/50">
+                  //         {formatDistanceToNow(new Date(post.post.createdAt), {
+                  //           addSuffix: true,
+                  //           locale: es,
+                  //         })}
+                  //       </div>
+                  //       </div>
+                  //       <span className="ms-3">{post.post.content}</span>
+                  //     </div>
+                  //   </div>
+                  // ))}
+                  <Feed/>
+                }
               </div>
             </div>
 
