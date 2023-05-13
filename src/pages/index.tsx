@@ -75,7 +75,7 @@ const Home: NextPage = () => {
             {previewData && previewData?.map((post) => (
               <div className="flex flex-row items-center justify-center bg-white/10 rounded-xl p-4 my-1 text-white text-2xl hover:bg-white/20 w-10/12 mx-auto" key={post.id}>
                 <CreatePostWizard />
-                <span className="ms-3">{post.content}</span>
+                <span className="">{post.content}</span>
               </div>
           ))}
           {isLoading && <div className="flex flex-row items-center justify-center bg-white/10 rounded-xl p-4 my-1 text-white hover:bg-white/20 w-10/12 mx-auto">Cargando emojis 🙈...</div>}

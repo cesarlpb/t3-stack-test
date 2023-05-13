@@ -7,13 +7,17 @@ import Img from "next/image";
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Link from "next/link";
+// import { isMobile } from 'react-device-detect';
+import { useEffect, useState } from "react";
 
-const ProfilePicture = ({ width, height }: { width?: number; height?: number }) => {
+const ProfilePicture = ({ width, height, colSpan }: { width?: number; height?: number, colSpan?: number }) => {
+  
   const {user} = useUser();
+
   if(!user) return null;
   return (
-  <div className="md:me-3 ">
-    <Img className="rounded-full" 
+  <div className={`flex justify-center col-span-${colSpan ?? 4} mx-auto`}>
+    <Img className="rounded-full"
     src={user.profileImageUrl} 
     alt={user.username || "profile picture"} 
     width={width ?? 16} 
@@ -34,13 +38,13 @@ const CreatePostWizard = () => {
     mx-auto
     justify-between items-center 
     w-8/12 md:w-6/12 
-    mt-36 md:mt-18 lg:mt-0
+    mt-40 md:mt-18 lg:mt-0
     md:px-5 border-0">
-      <ProfilePicture width={80} height={80}/>
+      <ProfilePicture width={80} height={80} colSpan={4}/>
       <input 
       type="text" 
-      className="w-10/12 bg-transparent md:ps-3 my-3 text-center md:text-start outline-none text-lg xl:text-xl" 
-      placeholder="Escribe algunos emojis!"
+      className="w-full md:w-10/12 bg-transparent px-5 my-3 text-center md:text-start outline-none text-lg xl:text-xl" 
+      placeholder="🤓Escribe algunos emojis!😐"
       onChange={handleInputChange}
       />
       <button 
@@ -52,9 +56,18 @@ const CreatePostWizard = () => {
   )
 };
 const Posts: NextPage = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    if(window.matchMedia("(max-width: 600px)").matches){
+      setIsMobile(true);
+    }
+    // console.log(isMobile);
+  }, []);
     const user = useUser();
     if(!user) return null;
     const {data, isLoading} = api.posts.getAll.useQuery();
+    
+
     return(
         <>
         <Head>
@@ -74,7 +87,7 @@ const Posts: NextPage = () => {
           gap-y-2 lg:gap-y-0 
           lg:justify-between w-full border-0">
             <Link href="/">
-              <h1 className="text-2xl font-extrabold tracking-tight text-slate-200 sm:text-[2rem]">
+              <h1 className="font-extrabold tracking-tight text-slate-200 text-[2rem] md:text-4xl">
                 My <span className="text-[hsl(280,100%,70%)]">Emojer</span> App 🙃
               </h1>
             </Link>
@@ -110,9 +123,11 @@ const Posts: NextPage = () => {
           <div className="w-10/12 md:w-1/2 border-0">
             <div className="max-h-[400px] overflow-y-auto">
             {data && data?.map((post) => (
-              <div className="flex flex-row items-center justify-center bg-white/10 rounded-xl p-4 my-1 text-white text-2xl hover:bg-white/20 w-10/12 mx-auto" key={post.id}>
-                <ProfilePicture width={48} height={48} />
-                <div className="flex flex-col">
+              <div className="flex-row items-center justify-center 
+              bg-white/10 rounded-xl p-4 my-1 text-white text-2xl 
+              hover:bg-white/20 w-10/12 mx-auto grid grid-flow-col auto-cols-fr gap-2" key={post.id}>
+                <ProfilePicture width={48} height={48} colSpan={isMobile ? 2 : 4} />                
+                <div className="flex flex-col col-span-8">
                   <span className="ms-3 text-xs text-slate-400">{formatDistanceToNow(new Date(post.createdAt), { addSuffix: true, locale: es })}</span>
                   <span className="ms-3">{post.content}</span>
                 </div>
