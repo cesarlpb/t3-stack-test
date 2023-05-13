@@ -1,13 +1,13 @@
 import { SignOutButton } from "@clerk/clerk-react";
 import { SignInButton, useUser } from "@clerk/nextjs";
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import Img from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import Link from "next/link";
-// import { isMobile } from 'react-device-detect';
+// import { isMobile } from 'react-device-detect'; // librería device-detect para comprobar userAgent de dispositivo
 import { useEffect, useState } from "react";
 import { LoadingPage } from "~/components/loading";
 
@@ -157,7 +157,7 @@ const Posts: NextPage = () => {
                       />
                       <div className="col-span-8 flex flex-col ms-5">
                         <div className="flex flex-row ms-3">
-                        <div className="text-xs md:text-sm text-slate-200 font-thin">{`@${post.author.username}`}</div>
+                        <div className="text-xs md:text-sm text-slate-200 font-thin">{post?.author ? `@${post.author.username || ""}` : ""}</div>
                         <div className="text-xs md:text-sm text-slate-200/50 mx-2">·</div>
                         <div className="text-xs md:text-sm text-slate-200/50">
                           {formatDistanceToNow(new Date(post.post.createdAt), {

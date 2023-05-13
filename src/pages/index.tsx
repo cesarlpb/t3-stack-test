@@ -25,13 +25,13 @@ const ProfilePicture = ({
 }) => {
   const { user, isLoaded: userLoaded } = useUser();
   // console.log("user:", user);
-  if (!user) return null;
+  if (!user && !userLoaded) return null;
   return (
     <div className={`me-3 col-span-${colSpan}`}>
       <Img
         className="rounded-full"
         src={authorImgUrl || "/avatar.png"}
-        alt={`@${user.username} profile picture` || "profile picture"}
+        alt={user?.username ? `@${user?.username || ""} profile picture` : "profile picture"}
         width={width ?? 24}
         height={height ?? 24}
       />
@@ -54,7 +54,7 @@ const PostView = (props: PostWithUser) => {
       />
       <div className="flex flex-col grow border-0 ps-5">
         <div className="flex flex-row align-middle">
-          <div className="text-xs md:text-sm text-slate-200 font-thin">{`@${author.username}`}</div>
+          <div className="text-xs md:text-sm text-slate-200 font-thin">{author ? `@${author?.username || ""}` : ""}</div>
           <div className="text-xs md:text-sm text-slate-200/50 mx-2">·</div>
           <div className="ms-3 text-xs text-slate-400 md:text-sm align-baseline">
             {formatDistanceToNow(new Date(post.createdAt), {
@@ -69,27 +69,48 @@ const PostView = (props: PostWithUser) => {
   );
 };
 
+// const Feed = () => {
+//   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
+//   const previewData = data?.slice(0, 3) || [];
+  
+//     if(!postsLoading) return <LoadingPage />;
+
+//     if(!previewData){
+//       return <div>Vaya... esos emojis no llegan🫥</div>
+//     }
+
+//     if(previewData){
+//       return (
+//       <>
+//       {previewData?.map((postWithAuthor) => (
+//         <>
+//         <PostView {...postWithAuthor} key={postWithAuthor.post.id} />
+//         </>
+//       ))}
+//       </>
+//       );
+//     }
+    
+// };
+
 const Feed = () => {
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
   const previewData = data?.slice(0, 3) || [];
-  
-    if(!postsLoading) return <LoadingPage />;
 
-    if(!previewData){
-      return <div>Vaya... esos emojis no llegan🫥</div>
-    }
-
-    if(previewData){
-      return(
+  if (!postsLoading) {
+    return <LoadingPage />;
+  } else if (!previewData) {
+    return <div className="">Vaya... esos emojis no llegan🫥</div>;
+  } else {
+    return (
       <>
-      {previewData?.map((postWithAuthor) => (
-        <PostView {...postWithAuthor} key={postWithAuthor.post.id} />
-      ))}
+        {previewData.map((postWithAuthor) => (
+          <PostView {...postWithAuthor} key={postWithAuthor.post.id} />
+        ))}
       </>
-      );
-    }
-    
-};
+    );
+  }
+}; 
 
 const Home: NextPage = () => {
   const { user, isLoaded: userLoaded} = useUser();
@@ -167,7 +188,10 @@ const Home: NextPage = () => {
             {previewData &&
               previewData?.map((postWithAuthor) => (
                 <PostView {...postWithAuthor} key={postWithAuthor.post.id} />
-              ))}
+            ))}
+            
+            {previewData && <Feed /> }
+            
             {/* Solo aparece mientras se están cargando los posts */}
             {postsLoading && (
               <div className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">

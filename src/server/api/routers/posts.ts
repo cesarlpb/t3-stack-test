@@ -6,11 +6,17 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 // Filtramos los datos que se van a enviar en el cliente
 const FilterUserForClient = (user: User) => {
+  if (!user)
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "User no encontrado",
+    });
+  const fullName = `${user?.firstName ?? ""}, ${user?.lastName ?? ""}`;
   return {
-    id: user.id,
-    username: user.username,
-    name: `${user.firstName}, ${user.lastName}`,
-    profileImageUrl: user.profileImageUrl,
+    id: user?.id,
+    username: user?.username,
+    name: fullName,
+    profileImageUrl: user?.profileImageUrl,
   };
 };
 

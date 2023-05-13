@@ -21,8 +21,8 @@ export function LoadingSpinner(props: {size?: number}) {
       </svg>
       <span className="sr-only">Loading...</span>
     </div>
-  );
-};
+  )
+}
 export function LoadingPage() {
     return(
         <div className="flex flex-col items-center align-middle justify-center w-screen h-screen">
@@ -30,4 +30,4 @@ export function LoadingPage() {
             <LoadingSpinner size={60} />
         </div>
     )
-};
+}
