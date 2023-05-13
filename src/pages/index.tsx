@@ -97,7 +97,7 @@ const Feed = () => {
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
   const previewData = data?.slice(0, 3) || [];
 
-  if (!postsLoading) {
+  if (postsLoading) {
     return <LoadingPage />;
   } else if (!previewData) {
     return <div className="">Vaya... esos emojis no llegan🫥</div>;
@@ -185,11 +185,8 @@ const Home: NextPage = () => {
           <div className="flex flex-col gap-4 sm:grid-cols-2 md:gap-8"></div>
           <div className="flex w-3/4 flex-col items-center justify-center border-0 border-white lg:w-1/2">
             <h3 className="pb-2 text-2xl text-slate-200">Últimos posts:</h3>
-            {previewData &&
-              previewData?.map((postWithAuthor) => (
-                <PostView {...postWithAuthor} key={postWithAuthor.post.id} />
-            ))}
             
+            {/* Cargando los posts usando Feed */}
             {previewData && <Feed /> }
             
             {/* Solo aparece mientras se están cargando los posts */}
