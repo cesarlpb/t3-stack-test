@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 import Img from "next/image";
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
+import Link from "next/link";
 
 const ProfilePicture = ({ width, height }: { width?: number; height?: number }) => {
   const {user} = useUser();
@@ -72,11 +73,11 @@ const Posts: NextPage = () => {
           justify-center items-end lg:items-center
           gap-y-2 lg:gap-y-0 
           lg:justify-between w-full border-0">
-            <a href="/">
+            <Link href="/">
               <h1 className="text-2xl font-extrabold tracking-tight text-slate-200 sm:text-[2rem]">
                 My <span className="text-[hsl(280,100%,70%)]">Emojer</span> App 🙃
               </h1>
-            </a>
+            </Link>
             <div className="flex flex-col lg:flex-row gap-4 sm:grid-cols-2 md:gap-8">
               <h2 className="flex flex-row items-center text-3xl text-slate-200 whitespace-pre">
                 Bienvenid@ 
