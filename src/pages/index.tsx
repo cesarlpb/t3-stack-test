@@ -4,6 +4,7 @@ import { Post } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Img from "next/image";
+import Link from "next/link";
 
 import { api } from "~/utils/api";
 
@@ -33,11 +34,11 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
       
       <div className="flex flex-row items-center fixed top-0 px-10 py-5 bg-slate-900/70 justify-between w-full border-0">
-        <a href="/">
+        <Link href="/">
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-200 sm:text-[2rem]">
             My <span className="text-[hsl(280,100%,70%)]">Emojer</span> App 🙃
           </h1>
-        </a>
+        </Link>
         <div className="flex flex-row gap-4 sm:grid-cols-2 md:gap-8">
           <h2 className="flex flex-row items-center text-3xl text-slate-200 whitespace-pre">
             Bienvenid@ 
@@ -80,10 +81,10 @@ const Home: NextPage = () => {
           {isLoading && <div className="flex flex-row items-center justify-center bg-white/10 rounded-xl p-4 my-1 text-white hover:bg-white/20 w-10/12 mx-auto">Cargando emojis 🙈...</div>}
           {!previewData && <div className="flex flex-row items-center justify-center bg-white/10 rounded-xl p-4 my-1 text-white hover:bg-white/20 w-10/12 mx-auto">No hay emojis, gg!🥶</div>}
           </div>
-          <a className="rounded-full bg-[hsl(280,100%,70%)] px-10 py-3 font-semibold text-black no-underline transition hover:bg-cyan-200/70 hover:text-slate-200 text-center"
+          <Link className="rounded-full bg-[hsl(280,100%,70%)] px-10 py-3 font-semibold text-black no-underline transition hover:bg-cyan-200/70 hover:text-slate-200 text-center"
           href="/posts">
             Ver mas posts
-          </a>
+          </Link>
         </div>
       </main>
     </>
