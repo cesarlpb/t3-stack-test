@@ -4,8 +4,8 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import Img from "next/image";
-import { formatDistanceToNow } from "date-fns";
-import { es } from "date-fns/locale";
+// import { formatDistanceToNow, set } from "date-fns";
+// import { es } from "date-fns/locale";
 import Link from "next/link";
 // import { isMobile } from 'react-device-detect'; // librería device-detect para comprobar userAgent de dispositivo
 import { useEffect, useState } from "react";
@@ -36,11 +36,22 @@ const ProfilePicture = ({
     </div>
   );
 };
-const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  console.log(e.target.value);
-};
+
 const CreatePostWizard = () => {
   const { user } = useUser();
+  const {mutate} = api.posts.create.useMutation();
+  const [input, setInput] = useState("");
+
+  // No necesito estas funciones:
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   console.log(e.target.value);
+  //   setInput(e.target.value);
+  // };
+  // const handlePublish = () => {
+  //   const {mutate} = api.posts.create.useMutation();
+  //   mutate({ content: input });
+  //   console.log("Post publicado: ", input);
+  // };
   if (!user) return null;
   return (
     <>
@@ -57,9 +68,13 @@ const CreatePostWizard = () => {
           type="text"
           className="my-3 w-full bg-transparent px-5 text-center text-lg outline-none md:w-10/12 md:text-start xl:text-xl"
           placeholder="🤓Escribe algunos emojis!😐"
-          onChange={handleInputChange}
+          onChange={(e) => setInput(e.target.value)}
+          value={input}
         />
-        <button className="rounded-full bg-[hsl(280,100%,70%)] px-5 py-3 text-center font-semibold text-black no-underline transition hover:bg-cyan-400">
+        <button className="rounded-full bg-[hsl(280,100%,70%)] px-5 py-3 
+        text-center font-semibold text-black no-underline transition 
+        hover:bg-cyan-400"
+        onClick={() => mutate({content: input})}>
           Publicar
         </button>
       </div>
