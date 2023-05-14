@@ -144,7 +144,8 @@ const Posts: NextPage = () => {
   const { data, isLoading } = api.posts.getAll.useQuery();
 
   if (isLoading) {
-    return <LoadingPage />;
+    // height={true} -> full screen -> h-screen
+    return <LoadingPage height={true} />;
   }
 
   return (

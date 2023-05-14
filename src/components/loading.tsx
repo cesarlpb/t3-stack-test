@@ -23,9 +23,10 @@ export function LoadingSpinner(props: {size?: number}) {
     </div>
   )
 }
-export function LoadingPage() {
+export function LoadingPage(props: {height?: boolean}) {
     return(
-        <div className="flex flex-col items-center align-middle justify-center w-screen h-screen py-5">
+        <div className={`flex flex-col items-center align-middle justify-center 
+        w-screen ${props.height ? "h-screen" : "h-full"} py-5`}>
             <p className="text-2xl">Cargando emojis...👻</p>
             <LoadingSpinner size={60} />
         </div>

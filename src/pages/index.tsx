@@ -86,8 +86,11 @@ const Home: NextPage = () => {
             {/* Cargando los posts usando Feed */}
             {previewData && <Feed postsNumber={3} />}
 
-            {/* Solo aparece mientras se están cargando los posts */}
-            {postsLoading && <LoadingPage />}
+            {/* Solo aparece mientras se están cargando los posts 
+            height = true  -> h-screan  100vh
+            height = false -> h-full    100%
+            */}
+            {postsLoading && <LoadingPage height={false} />}
 
             {!previewData && (
               <div className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
