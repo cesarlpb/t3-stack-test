@@ -67,33 +67,42 @@ const CreatePostWizard = () => {
       <div
         className="md:mt-18 mx-auto mt-40 
         flex w-8/12 flex-col 
-        items-center justify-between 
+        items-center justify-center 
         border-0 md:px-0 lg:mt-0
-        lg:w-6/12 lg:flex-row"
+        lg:w-8/12 lg:flex-row"
       >
         <ProfilePicture width={80} height={80} />
 
         {!isPosting && (
           <>
-            <input
-              type="text"
-              className="my-3 w-3/4 bg-transparent px-5 text-center text-lg outline-none md:w-8/12 md:text-start xl:text-xl"
-              placeholder={`🤓Escribe ${
-                window.innerWidth < 700 ? "" : "algunos "
-              }emojis!😐`}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && input !== "") {
-                  mutate({ content: input });
-                }
-              }}
-              value={input}
-              disabled={isPosting}
-            />
-            <span className="rounded-r-lg bg-slate-900 px-2 py-2 text-slate-200">
-              Enter
-            </span>
-            <div className="ms-3 flex flex-row items-center justify-center">
+            <div className="flex justify-between items-center border-2 mx-1 px-2 rounded-md">
+              <input
+                type="text"
+                className="my-3 w-3/4 bg-transparent px-1 text-center text-lg 
+                outline-none md:w-8/12 md:text-start xl:text-xl"
+                // ${window.innerWidth < 700 ? "" : "algunos "}
+                placeholder={`🤓Escribe emojis!😐`}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && input !== "") {
+                    mutate({ content: input });
+                  }
+                }}
+                value={input}
+                disabled={isPosting}
+              />
+              {/* 
+                previous style:
+                className="rounded-r-lg bg-slate-900 px-2 py-2 text-slate-200" 
+              */}
+              <kbd 
+              className="px-1 py-1.5 mx-0 text-xs font-semibold text-gray-800 
+              bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 
+              dark:text-gray-100 dark:border-gray-500">
+                Enter
+              </kbd>
+            </div>
+            <div className="ms-0 flex flex-row items-center justify-center">
               {
                 <button
                   className={`rounded-full 
@@ -198,11 +207,11 @@ const Posts: NextPage = () => {
 
             <div className="w-10/12 border-0 md:w-1/2">
               <div className="scrollbar-custom max-h-[400px] overflow-y-auto">
-                {false && <Feed />}
+                {data && <Feed />}
               </div>
             </div>
 
-            {true && <LoadingPage />}
+            {isLoading && <LoadingPage />}
 
             {!data && (
               <div className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
