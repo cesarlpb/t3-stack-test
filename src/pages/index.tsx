@@ -1,127 +1,21 @@
 import { SignOutButton } from "@clerk/clerk-react";
 import { SignInButton, useUser } from "@clerk/nextjs";
-// import { Post } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Img from "next/image";
 import Link from "next/link";
-import { formatDistanceToNow } from "date-fns";
-import { es } from "date-fns/locale";
-
 import { api } from "~/utils/api";
-import type { RouterOutputs } from "~/utils/api";
-import { LoadingPage } from "~/components/loading";
 import { Feed } from "~/components/feed";
-type PostWithUser = RouterOutputs["posts"]["getAll"][number];
-
-// const ProfilePicture = ({
-//   authorImgUrl,
-//   width = 32,
-//   height = 32,
-//   colSpan = 4,
-// }: {
-//   authorImgUrl: string;
-//   width?: number;
-//   height?: number;
-//   colSpan?: number;
-// }) => {
-//   const { user, isLoaded: userLoaded } = useUser();
-//   // console.log("user:", user);
-//   if (!user && !userLoaded) return null;
-//   return (
-//     <div className={`me-3 col-span-${colSpan}`}>
-//       <Img
-//         className="rounded-full"
-//         src={authorImgUrl || "/avatar.png"}
-//         alt={user?.username ? `@${user?.username || ""} profile picture` : "profile picture"}
-//         width={width ?? 24}
-//         height={height ?? 24}
-//       />
-//     </div>
-//   );
-// };
-
-
-// const PostView = (props: PostWithUser) => {
-//   const { post, author } = props;
-//   return (
-//     <div
-//       className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-cyan-300/30 p-4 text-2xl text-white hover:bg-white/20"
-//       key={post.id}
-//     >
-//       <ProfilePicture
-//         authorImgUrl={author.profileImageUrl}
-//         width={48}
-//         height={48}
-//       />
-//       <div className="flex flex-col grow border-0 ps-5">
-//         <div className="flex flex-row align-middle">
-//           <div className="text-xs md:text-sm text-slate-200 font-thin">{author ? `@${author?.username || ""}` : ""}</div>
-//           <div className="text-xs md:text-sm text-slate-200/50 mx-2">·</div>
-//           <div className="ms-3 text-xs text-slate-400 md:text-sm align-baseline">
-//             {formatDistanceToNow(new Date(post.createdAt), {
-//               addSuffix: true,
-//               locale: es,
-//             })}
-//           </div>
-//         </div>
-//         <div className="">{post.content}</div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// const Feed = () => {
-//   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
-//   const previewData = data?.slice(0, 3) || [];
-  
-//     if(!postsLoading) return <LoadingPage />;
-
-//     if(!previewData){
-//       return <div>Vaya... esos emojis no llegan🫥</div>
-//     }
-
-//     if(previewData){
-//       return (
-//       <>
-//       {previewData?.map((postWithAuthor) => (
-//         <>
-//         <PostView {...postWithAuthor} key={postWithAuthor.post.id} />
-//         </>
-//       ))}
-//       </>
-//       );
-//     }
-    
-// };
-
-// const Feed = (props: { postsNumber?: number }) => {
-//   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
-//   const previewData = data?.slice(0, 3) || [];
-
-//   if (postsLoading) {
-//     return <LoadingPage />;
-//   } else if (!previewData) {
-//     return <div className="">Vaya... esos emojis no llegan🫥</div>;
-//   } else {
-//     return (
-//       <>
-//         {previewData.map((postWithAuthor) => (
-//           <PostView {...postWithAuthor} key={postWithAuthor.post.id} />
-//         ))}
-//       </>
-//     );
-//   }
-// }; 
 
 const Home: NextPage = () => {
-  const { user, isLoaded: userLoaded} = useUser();
+  const { user, isLoaded: userLoaded } = useUser();
   // Empieza a cargar los posts ASAP
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
   const previewData = data?.slice(0, 3) || [];
 
   // Se retorna un div vacío si el user no está cargado todavía
-  if(!userLoaded){ return <div/> }
+  if (!userLoaded) {
+    return <div />;
+  }
 
   return (
     <>
@@ -137,7 +31,7 @@ const Home: NextPage = () => {
         {/* Navbar */}
         <div
           className="container-fluid flex w-full flex-col 
-        justify-center gap-12 px-0 py-24 lg:py-8 lg:items-center"
+        justify-center gap-12 px-0 py-24 lg:items-center lg:py-8"
         >
           <div
             className="fixed top-0 flex 
@@ -187,10 +81,10 @@ const Home: NextPage = () => {
           <div className="flex flex-col gap-4 sm:grid-cols-2 md:gap-8"></div>
           <div className="flex w-3/4 flex-col items-center justify-center border-0 border-white lg:w-1/2">
             <h3 className="pb-2 text-2xl text-slate-200">Últimos posts:</h3>
-            
+
             {/* Cargando los posts usando Feed */}
-            {previewData && <Feed postsNumber={3} /> }
-            
+            {previewData && <Feed postsNumber={3} />}
+
             {/* Solo aparece mientras se están cargando los posts */}
             {postsLoading && (
               <div className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
