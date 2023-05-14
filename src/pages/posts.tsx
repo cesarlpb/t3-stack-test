@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LoadingPage } from "~/components/loading";
 import { Feed } from "~/components/feed";
+import { isMobile } from "react-device-detect";
 
 const ProfilePicture = ({
   width,
@@ -39,10 +40,16 @@ const ProfilePicture = ({
 
 const CreatePostWizard = () => {
   const { user } = useUser();
-  const {mutate} = api.posts.create.useMutation();
+  const ctx = api.useContext();
+  const {mutate, isLoading: isPosting} = api.posts.create.useMutation({
+    onSuccess: () => {
+      setInput("");
+      void ctx.posts.getAll.invalidate();
+    },
+  });
   const [input, setInput] = useState("");
 
-  // No necesito estas funciones:
+  /* No necesito estas funciones:
   // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   console.log(e.target.value);
   //   setInput(e.target.value);
@@ -51,7 +58,8 @@ const CreatePostWizard = () => {
   //   const {mutate} = api.posts.create.useMutation();
   //   mutate({ content: input });
   //   console.log("Post publicado: ", input);
-  // };
+  };*/
+
   if (!user) return null;
   return (
     <>
@@ -60,16 +68,17 @@ const CreatePostWizard = () => {
     flex
     w-8/12 flex-col 
     items-center justify-between 
-    border-0 md:w-6/12 md:flex-row
+    border-0 lg:w-6/12 lg:flex-row
     md:px-5 lg:mt-0"
       >
         <ProfilePicture width={80} height={80} colSpan={4} />
         <input
           type="text"
           className="my-3 w-full bg-transparent px-5 text-center text-lg outline-none md:w-10/12 md:text-start xl:text-xl"
-          placeholder="🤓Escribe algunos emojis!😐"
+          placeholder={`🤓Escribe ${window.innerWidth < 700 ? "" : "algunos estupendásticos "}emojis!😐`}
           onChange={(e) => setInput(e.target.value)}
           value={input}
+          disabled={isPosting}
         />
         <button className="rounded-full bg-[hsl(280,100%,70%)] px-5 py-3 
         text-center font-semibold text-black no-underline transition 
@@ -82,13 +91,19 @@ const CreatePostWizard = () => {
   );
 };
 const Posts: NextPage = () => {
+  /* // Por qué no escribe la condición correcta? Resetea el valor a false en recargas
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
-    if (window.matchMedia("(max-width: 600px)").matches) {
+    if (
+    // window.matchMedia("(max-width: 600px)").matches || 
+    window.innerWidth <= 999) {
       setIsMobile(true);
+    }else{
+      setIsMobile(false);
     }
-    // console.log(isMobile);
+    console.log(isMobile, window.innerWidth, window.innerWidth <= 999);
   }, []);
+  */
   const user = useUser();
   if (!user) return null;
   const { data, isLoading } = api.posts.getAll.useQuery();
