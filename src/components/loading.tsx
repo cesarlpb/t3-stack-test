@@ -1,6 +1,6 @@
 export function LoadingSpinner(props: {size?: number}) {
   return (
-    <div role="status">
+    <div className="mx-auto" role="status">
       <svg
         aria-hidden="true"
         className="animate-spin fill-slate-300 text-slate-200 dark:text-slate-600"

@@ -9,9 +9,11 @@ import Img from "next/image";
 import Link from "next/link";
 // import { isMobile } from 'react-device-detect'; // librería device-detect para comprobar userAgent de dispositivo
 import { useEffect, useState } from "react";
-import { LoadingPage } from "~/components/loading";
+import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { Feed } from "~/components/feed";
-import { isMobile } from "react-device-detect";
+import { toast } from "react-hot-toast";
+import { ZodError } from "zod";
+// import { isMobile } from "react-device-detect";
 
 const ProfilePicture = ({
   width,
@@ -46,6 +48,16 @@ const CreatePostWizard = () => {
       setInput("");
       void ctx.posts.getAll.invalidate();
     },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content; // ['Invalid emoji']
+      console.log("zod error: ", errorMessage);
+      if(errorMessage && errorMessage[0]) {
+        toast.error(`Vaya...${errorMessage}\n👉🏼Prueba de nuevo más tarde.⏱️`) // \n¡Ese no parece un emoji válido!😕
+      }else{
+        toast.error("Error al publicar el post.🥶 Prueba de nuevo más tarde.");
+      }
+      // toast.error("Error al publicar el post");
+    },
   });
   const [input, setInput] = useState("");
 
@@ -65,27 +77,56 @@ const CreatePostWizard = () => {
     <>
       <div
         className="md:mt-18 mx-auto mt-40 
-    flex
-    w-8/12 flex-col 
-    items-center justify-between 
-    border-0 lg:w-6/12 lg:flex-row
-    md:px-5 lg:mt-0"
+        flex w-8/12 flex-col 
+        items-center justify-between 
+        border-0 md:px-0 lg:mt-0
+        lg:w-6/12 lg:flex-row"
       >
-        <ProfilePicture width={80} height={80} colSpan={4} />
+        
+        <ProfilePicture width={80} height={80} />
+        
+        {!isPosting && <>
         <input
           type="text"
-          className="my-3 w-full bg-transparent px-5 text-center text-lg outline-none md:w-10/12 md:text-start xl:text-xl"
-          placeholder={`🤓Escribe ${window.innerWidth < 700 ? "" : "algunos estupendásticos "}emojis!😐`}
+          className="my-3 w-3/4 bg-transparent px-5 text-center text-lg outline-none md:w-8/12 md:text-start xl:text-xl"
+          placeholder={`🤓Escribe ${
+            window.innerWidth < 700 ? "" : "algunos "
+          }emojis!😐`}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if(e.key === "Enter" && input !== ""){
+              mutate({ content: input })
+            }
+          }}
           value={input}
           disabled={isPosting}
         />
-        <button className="rounded-full bg-[hsl(280,100%,70%)] px-5 py-3 
-        text-center font-semibold text-black no-underline transition 
-        hover:bg-cyan-400"
-        onClick={() => mutate({content: input})}>
-          Publicar
-        </button>
+        <span className="bg-slate-900 text-slate-200 px-2 py-2 rounded-r-lg">Enter</span>
+        <div className="flex flex-row items-center justify-center ms-3">
+          {(
+            <button
+              className={`rounded-full 
+              px-3 py-3 
+              text-center font-semibold no-underline transition 
+              hover:bg-cyan-400 
+              ${(input !== "" && !isPosting) ? "bg-[hsl(280,100%,70%)] text-black" : "disabled:opacity-75 bg-gray-300 text-slate-500"}`}      
+              onClick={() => mutate({ content: input })}
+              disabled={input == "" || isPosting}
+            >
+              {/* bg-[hsl(280,100%,70%)]  */}
+              Publicar
+            </button>
+          )}
+          
+        </div>
+        </>}
+        {isPosting && (
+            <div className="flex flex-row justify-between items-center mx-auto text-center px-5">
+              <div className="me-3">Publicando...🚀</div>
+              <LoadingSpinner size={36} />
+            </div>
+          )}
+
       </div>
     </>
   );
@@ -174,7 +215,7 @@ const Posts: NextPage = () => {
             <h3 className="pb-2 text-2xl text-slate-200">Emojis:</h3>
 
             <div className="w-10/12 border-0 md:w-1/2">
-              <div className="max-h-[400px] overflow-y-auto">
+              <div className="max-h-[400px] overflow-y-auto scrollbar-custom">
                 {data &&
                   // data?.map((post) => (
                   //   <div
