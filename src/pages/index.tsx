@@ -87,8 +87,8 @@ const Home: NextPage = () => {
             {previewData && <Feed postsNumber={3} />}
 
             {/* Solo aparece mientras se están cargando los posts */}
-            {postsLoading && <LoadingPage/>}
-            
+            {postsLoading && <LoadingPage />}
+
             {!previewData && (
               <div className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
                 No hay emojis, gg!🥶
