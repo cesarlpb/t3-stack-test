@@ -198,15 +198,12 @@ const Posts: NextPage = () => {
 
             <div className="w-10/12 border-0 md:w-1/2">
               <div className="scrollbar-custom max-h-[400px] overflow-y-auto">
-                {data && <Feed />}
+                {false && <Feed />}
               </div>
             </div>
 
-            {isLoading && (
-              <div className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
-                Cargando emojis 🙈...
-              </div>
-            )}
+            {true && <LoadingPage />}
+
             {!data && (
               <div className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
                 No hay emojis, gg!🥶

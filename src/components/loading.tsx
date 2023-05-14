@@ -25,7 +25,7 @@ export function LoadingSpinner(props: {size?: number}) {
 }
 export function LoadingPage() {
     return(
-        <div className="flex flex-col items-center align-middle justify-center w-screen h-screen">
+        <div className="flex flex-col items-center align-middle justify-center w-screen py-5">
             <p className="text-2xl">Cargando emojis...👻</p>
             <LoadingSpinner size={60} />
         </div>
