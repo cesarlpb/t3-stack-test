@@ -52,7 +52,7 @@ const CreatePostWizard = () => {
       const errorMessage = e.data?.zodError?.fieldErrors.content; // ['Invalid emoji']
       console.log("zod error: ", errorMessage);
       if(errorMessage && errorMessage[0]) {
-        toast.error(`Vaya...${errorMessage}\n👉🏼Prueba de nuevo más tarde.⏱️`) // \n¡Ese no parece un emoji válido!😕
+        toast.error(`Vaya...${errorMessage[0]}\n👉🏼Prueba de nuevo más tarde.⏱️`) // \n¡Ese no parece un emoji válido!😕
       }else{
         toast.error("Error al publicar el post.🥶 Prueba de nuevo más tarde.");
       }
