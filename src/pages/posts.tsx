@@ -4,16 +4,11 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import Img from "next/image";
-// import { formatDistanceToNow, set } from "date-fns";
-// import { es } from "date-fns/locale";
 import Link from "next/link";
-// import { isMobile } from 'react-device-detect'; // librería device-detect para comprobar userAgent de dispositivo
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { Feed } from "~/components/feed";
 import { toast } from "react-hot-toast";
-import { ZodError } from "zod";
-// import { isMobile } from "react-device-detect";
 
 const ProfilePicture = ({
   width,
@@ -28,7 +23,9 @@ const ProfilePicture = ({
 
   if (!user) return null;
   return (
-    <div className={`flex justify-center align-middle col-span-${colSpan ?? 4}`}>
+    <div
+      className={`flex justify-center align-middle col-span-${colSpan ?? 4}`}
+    >
       <Img
         className="rounded-full"
         src={user.profileImageUrl}
@@ -43,7 +40,7 @@ const ProfilePicture = ({
 const CreatePostWizard = () => {
   const { user } = useUser();
   const ctx = api.useContext();
-  const {mutate, isLoading: isPosting} = api.posts.create.useMutation({
+  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
     onSuccess: () => {
       setInput("");
       void ctx.posts.getAll.invalidate();
@@ -51,26 +48,18 @@ const CreatePostWizard = () => {
     onError: (e) => {
       const errorMessage = e.data?.zodError?.fieldErrors.content; // ['Invalid emoji']
       console.log("zod error: ", errorMessage);
-      if(errorMessage && errorMessage[0]) {
-        toast.error(`Vaya...${errorMessage[0]}\n👉🏼Prueba de nuevo más tarde.⏱️`) // \n¡Ese no parece un emoji válido!😕
-      }else{
+      if (errorMessage && errorMessage[0]) {
+        toast.error(
+          `Vaya...${errorMessage[0]}\n👉🏼Prueba de nuevo más tarde.⏱️`
+        ); // \n¡Ese no parece un emoji válido!😕
+      } else {
         toast.error("Error al publicar el post.🥶 Prueba de nuevo más tarde.");
       }
       // toast.error("Error al publicar el post");
     },
   });
-  const [input, setInput] = useState("");
 
-  /* No necesito estas funciones:
-  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   console.log(e.target.value);
-  //   setInput(e.target.value);
-  // };
-  // const handlePublish = () => {
-  //   const {mutate} = api.posts.create.useMutation();
-  //   mutate({ content: input });
-  //   console.log("Post publicado: ", input);
-  };*/
+  const [input, setInput] = useState("");
 
   if (!user) return null;
   return (
@@ -82,77 +71,69 @@ const CreatePostWizard = () => {
         border-0 md:px-0 lg:mt-0
         lg:w-6/12 lg:flex-row"
       >
-        
         <ProfilePicture width={80} height={80} />
-        
-        {!isPosting && <>
-        <input
-          type="text"
-          className="my-3 w-3/4 bg-transparent px-5 text-center text-lg outline-none md:w-8/12 md:text-start xl:text-xl"
-          placeholder={`🤓Escribe ${
-            window.innerWidth < 700 ? "" : "algunos "
-          }emojis!😐`}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if(e.key === "Enter" && input !== ""){
-              mutate({ content: input })
-            }
-          }}
-          value={input}
-          disabled={isPosting}
-        />
-        <span className="bg-slate-900 text-slate-200 px-2 py-2 rounded-r-lg">Enter</span>
-        <div className="flex flex-row items-center justify-center ms-3">
-          {(
-            <button
-              className={`rounded-full 
+
+        {!isPosting && (
+          <>
+            <input
+              type="text"
+              className="my-3 w-3/4 bg-transparent px-5 text-center text-lg outline-none md:w-8/12 md:text-start xl:text-xl"
+              placeholder={`🤓Escribe ${
+                window.innerWidth < 700 ? "" : "algunos "
+              }emojis!😐`}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && input !== "") {
+                  mutate({ content: input });
+                }
+              }}
+              value={input}
+              disabled={isPosting}
+            />
+            <span className="rounded-r-lg bg-slate-900 px-2 py-2 text-slate-200">
+              Enter
+            </span>
+            <div className="ms-3 flex flex-row items-center justify-center">
+              {
+                <button
+                  className={`rounded-full 
               px-3 py-3 
               text-center font-semibold no-underline transition 
               hover:bg-cyan-400 
-              ${(input !== "" && !isPosting) ? "bg-[hsl(280,100%,70%)] text-black" : "disabled:opacity-75 bg-gray-300 text-slate-500"}`}      
-              onClick={() => mutate({ content: input })}
-              disabled={input == "" || isPosting}
-            >
-              {/* bg-[hsl(280,100%,70%)]  */}
-              Publicar
-            </button>
-          )}
-          
-        </div>
-        </>}
-        {isPosting && (
-            <div className="flex flex-row justify-between items-center mx-auto text-center px-5">
-              <div className="me-3">Publicando...🚀</div>
-              <LoadingSpinner size={36} />
+              ${
+                input !== "" && !isPosting
+                  ? "bg-[hsl(280,100%,70%)] text-black"
+                  : "bg-gray-300 text-slate-500 disabled:opacity-75"
+              }`}
+                  onClick={() => mutate({ content: input })}
+                  disabled={input == "" || isPosting}
+                >
+                  Publicar
+                </button>
+              }
             </div>
-          )}
-
+          </>
+        )}
+        {isPosting && (
+          <div className="mx-auto flex flex-row items-center justify-between px-5 text-center">
+            <div className="me-3">Publicando...🚀</div>
+            <LoadingSpinner size={36} />
+          </div>
+        )}
       </div>
     </>
   );
 };
 const Posts: NextPage = () => {
-  /* // Por qué no escribe la condición correcta? Resetea el valor a false en recargas
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    if (
-    // window.matchMedia("(max-width: 600px)").matches || 
-    window.innerWidth <= 999) {
-      setIsMobile(true);
-    }else{
-      setIsMobile(false);
-    }
-    console.log(isMobile, window.innerWidth, window.innerWidth <= 999);
-  }, []);
-  */
   const user = useUser();
+
   if (!user) return null;
   const { data, isLoading } = api.posts.getAll.useQuery();
-  
-  if(isLoading){
-    return <LoadingPage />
+
+  if (isLoading) {
+    return <LoadingPage />;
   }
-  
+
   return (
     <>
       <Head>
@@ -208,6 +189,7 @@ const Posts: NextPage = () => {
               )}
             </div>
           </div>
+          {/* Navbar */}
 
           <CreatePostWizard />
 
@@ -215,35 +197,8 @@ const Posts: NextPage = () => {
             <h3 className="pb-2 text-2xl text-slate-200">Emojis:</h3>
 
             <div className="w-10/12 border-0 md:w-1/2">
-              <div className="max-h-[400px] overflow-y-auto scrollbar-custom">
-                {data &&
-                  // data?.map((post) => (
-                  //   <div
-                  //     className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-cyan-300/30 p-4 text-2xl text-white hover:bg-white/20"
-                  //     key={post.post.id}
-                  //   >
-                  //     <ProfilePicture
-                  //       width={isMobile ? 48 : 48}
-                  //       height={isMobile ? 48 : 48}
-                  //       colSpan={isMobile ? 4 : 2}
-                  //     />
-                  //     <div className="col-span-8 flex flex-col ms-5">
-                  //       <div className="flex flex-row ms-3">
-                  //       <div className="text-xs md:text-sm text-slate-200 font-thin">{post?.author ? `@${post.author.username || ""}` : ""}</div>
-                  //       <div className="text-xs md:text-sm text-slate-200/50 mx-2">·</div>
-                  //       <div className="text-xs md:text-sm text-slate-200/50">
-                  //         {formatDistanceToNow(new Date(post.post.createdAt), {
-                  //           addSuffix: true,
-                  //           locale: es,
-                  //         })}
-                  //       </div>
-                  //       </div>
-                  //       <span className="ms-3">{post.post.content}</span>
-                  //     </div>
-                  //   </div>
-                  // ))}
-                  <Feed/>
-                }
+              <div className="scrollbar-custom max-h-[400px] overflow-y-auto">
+                {data && <Feed />}
               </div>
             </div>
 
