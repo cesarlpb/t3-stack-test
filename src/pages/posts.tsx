@@ -72,7 +72,7 @@ const CreatePostWizard = () => {
         lg:mt-0
         lg:w-8/12 lg:flex-row"
       >
-        <ProfilePicture width={80} height={80} />
+        {!isPosting && <ProfilePicture width={80} height={80} />}
 
         {!isPosting && (
           <>
@@ -129,7 +129,7 @@ const CreatePostWizard = () => {
         )}
         {isPosting && (
           <div className="mx-auto flex flex-row items-center justify-between px-5 text-center">
-            <div className="me-3">Publicando...🚀</div>
+            <div className="mx-3 w-full">Publicando...🚀</div>
             <LoadingSpinner size={36} />
           </div>
         )}
