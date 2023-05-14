@@ -68,19 +68,22 @@ const CreatePostWizard = () => {
         className="md:mt-18 mx-auto mt-40 
         flex w-8/12 flex-col 
         items-center justify-center 
-        border-0 md:px-0 lg:mt-0
+        gap-y-2 border-0 md:px-0
+        lg:mt-0
         lg:w-8/12 lg:flex-row"
       >
         <ProfilePicture width={80} height={80} />
 
         {!isPosting && (
           <>
-            <div className="flex justify-between items-center border-2 mx-1 px-2 rounded-md">
+            <div
+              className="mx-2 flex items-center 
+            justify-between gap-1 rounded-md border border-slate-400 px-2"
+            >
               <input
                 type="text"
                 className="my-3 w-3/4 bg-transparent px-1 text-center text-lg 
                 outline-none md:w-8/12 md:text-start xl:text-xl"
-                // ${window.innerWidth < 700 ? "" : "algunos "}
                 placeholder={`🤓Escribe emojis!😐`}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -95,10 +98,11 @@ const CreatePostWizard = () => {
                 previous style:
                 className="rounded-r-lg bg-slate-900 px-2 py-2 text-slate-200" 
               */}
-              <kbd 
-              className="px-1 py-1.5 mx-0 text-xs font-semibold text-gray-800 
-              bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-600 
-              dark:text-gray-100 dark:border-gray-500">
+              <kbd
+                className="mx-0 rounded-lg border border-gray-200 bg-gray-100 px-1 
+              py-1.5 text-xs font-semibold text-gray-800 dark:border-gray-500 
+              dark:bg-gray-600 dark:text-gray-100"
+              >
                 Enter
               </kbd>
             </div>
@@ -106,7 +110,7 @@ const CreatePostWizard = () => {
               {
                 <button
                   className={`rounded-full 
-              px-3 py-3 
+              px-5 py-3 
               text-center font-semibold no-underline transition 
               hover:bg-cyan-400 
               ${
@@ -202,7 +206,7 @@ const Posts: NextPage = () => {
 
           <CreatePostWizard />
 
-          <div className="flex w-full flex-col items-center justify-center border-0 border-white">
+          <div className="flex w-full flex-col items-center justify-center border-0">
             <h3 className="pb-2 text-2xl text-slate-200">Emojis:</h3>
 
             <div className="w-10/12 border-0 md:w-1/2">
