@@ -152,7 +152,7 @@ const Posts: NextPage = () => {
   return (
     <>
       <Head>
-        <title>My Emojer App 😐 - A simple emoji-friendly app</title>
+        <title>👀Posts - A simple emoji-friendly app</title>
         <meta
           name="description"
           content="A simple emoji-friendly app with NextJS, TS, Prisma, Planetscale, Vercel, Axiom, Tailwind and some other stuff -- probably, maybe."
@@ -227,7 +227,10 @@ const Posts: NextPage = () => {
           </div>
         </div>
 
-        <CustomLink icon="home" href="/" text="Volver al inicio" />
+        <div className="flex flex-row justify-between items-center">
+          <CustomLink icon="home" href="/" text="Inicio" />
+        </div>
+
       </main>
     </>
   );

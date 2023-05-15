@@ -100,7 +100,9 @@ const Home: NextPage = () => {
             )}
           </div>
 
-          <CustomLink icon="arrow-right" href="/posts" text="Ver más posts" />
+          <div className="flex flex-row justify-between items-center">
+            <CustomLink icon="arrow-right" href="/posts" text="Ver más Posts" />
+          </div>
 
         </div>
       </main>
