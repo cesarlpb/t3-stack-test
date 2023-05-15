@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { faArrowLeft, faArrowRight, faHome } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faArrowLeft, faArrowRight, faHome } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export function CustomLink(props: { icon?: string, href: string; text: string }) {
   
