@@ -9,6 +9,7 @@ import { useState } from "react";
 import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { Feed } from "~/components/feed";
 import { toast } from "react-hot-toast";
+import { CustomLink } from "~/components/customLink";
 
 const ProfilePicture = ({
   width,
@@ -225,6 +226,8 @@ const Posts: NextPage = () => {
             )}
           </div>
         </div>
+
+        <CustomLink href="/" text="Volver al inicio" />
       </main>
     </>
   );

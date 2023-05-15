@@ -6,6 +6,7 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 import { Feed } from "~/components/feed";
 import { LoadingPage } from "~/components/loading";
+import { CustomLink } from "~/components/customLink";
 
 const Home: NextPage = () => {
   const { user, isLoaded: userLoaded } = useUser();
@@ -98,12 +99,9 @@ const Home: NextPage = () => {
               </div>
             )}
           </div>
-          <Link
-            className="rounded-full bg-[hsl(280,100%,70%)] px-10 py-3 text-center font-semibold text-black no-underline transition hover:bg-cyan-200/70 hover:text-slate-200"
-            href="/posts"
-          >
-            Ver mas posts
-          </Link>
+          
+          <CustomLink href="/posts" text="Ver más posts" />
+          
         </div>
       </main>
     </>
