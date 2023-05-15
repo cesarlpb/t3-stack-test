@@ -6,8 +6,8 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 import { Feed } from "~/components/feed";
 import { LoadingPage } from "~/components/loading";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faHome } from "@fortawesome/free-solid-svg-icons";
 
 const SinglePostPage: NextPage = () => {
   const { user, isLoaded: userLoaded } = useUser();

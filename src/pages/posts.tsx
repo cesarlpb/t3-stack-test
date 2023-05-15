@@ -66,7 +66,7 @@ const CreatePostWizard = () => {
   return (
     <>
       <div
-        className="md:mt-18 mx-auto mt-40 
+        className="md:mt-24 mx-auto mt-40 pt-10
         flex w-8/12 flex-col 
         items-center justify-center 
         gap-y-2 border-0 md:px-0
@@ -159,7 +159,8 @@ const Posts: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+      <main id="main" className="flex min-h-screen flex-col items-center 
+      justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] pb-5">
         {/* Navbar */}
         <div
           className="container-fluid flex w-full flex-col 
