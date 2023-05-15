@@ -1,22 +1,27 @@
 import { SignOutButton } from "@clerk/clerk-react";
 import { SignInButton, useUser } from "@clerk/nextjs";
-import { type NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { api } from "~/utils/api";
-import { Feed } from "~/components/feed";
 import { LoadingPage } from "~/components/loading";
 import { CustomLink } from "~/components/customLink";
+import { createServerSideHelpers } from '@trpc/react-query/server';
+import { appRouter } from "~/server/api/root";
+import { prisma } from "~/server/db";
+import superjson from "superjson";
 
-const ProfilePage: NextPage = () => {
+const ProfilePage: NextPage<{ username : string }> = ({ username }) => {
   const { user, isLoaded: userLoaded } = useUser();
+  console.log("User loaded: ", username);
   // Empieza a cargar los posts ASAP
   const { data, isLoading } = api.profile.getUserByUsername.useQuery({
-    username: "cesarlpb",
+    username,
   });
 
   // Se retorna un div vacío si el user no está cargado todavía
   if (isLoading) {
+    console.log("Is loading..."); // Esto no aparece nunca ahora ya que la página se precarga
     return <LoadingPage height={true} content="Cargando cositas...🤓" />;
   }
 
@@ -25,7 +30,7 @@ const ProfilePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Perfil🧐 - A simple emoji-friendly app</title>
+        <title>{username} | 🤠Emojer App - A simple emoji-friendly app</title>
         <meta
           name="description"
           content="A simple emoji-friendly app with NextJS, TS, Prisma, Planetscale, Vercel, Axiom, Tailwind and some other stuff -- probably, maybe."
@@ -102,4 +107,31 @@ const ProfilePage: NextPage = () => {
   );
 };
 
+export const getStaticProps : GetStaticProps = async (context) => {
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: {prisma, userId: null },
+    transformer: superjson, // optional - adds superjson serialization
+  });
+
+  const slug = context.params?.slug as string;
+  if(typeof slug !== 'string') throw new Error('No hay slug');
+
+  const username = slug.replace('@', '');
+
+  await helpers.profile.getUserByUsername.prefetch({ username })
+
+  return{
+    props: {
+      trpcState: helpers.dehydrate(),
+      username
+    }
+  }
+};
+
+export const getStaticPaths = () => {
+  return { paths: [], fallback: "blocking" }
+};
+
 export default ProfilePage;
+
