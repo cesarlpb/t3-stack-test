@@ -99,9 +99,9 @@ const Home: NextPage = () => {
               </div>
             )}
           </div>
-          
-          <CustomLink href="/posts" text="Ver más posts" />
-          
+
+          <CustomLink icon="arrow-right" href="/posts" text="Ver más posts" />
+
         </div>
       </main>
     </>

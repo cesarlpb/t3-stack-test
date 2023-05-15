@@ -227,7 +227,7 @@ const Posts: NextPage = () => {
           </div>
         </div>
 
-        <CustomLink href="/" text="Volver al inicio" />
+        <CustomLink icon="home" href="/" text="Volver al inicio" />
       </main>
     </>
   );

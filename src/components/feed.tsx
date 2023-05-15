@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import Img from "next/image";
 import { useUser } from "@clerk/nextjs";
+import Link from "next/link";
 
 export const ProfilePicture = ({
   authorImgUrl,
@@ -54,18 +55,25 @@ export const PostView = (props: PostWithUser) => {
       />
       <div className="flex grow flex-col border-0 ps-5">
         <div className="flex flex-row align-middle">
-          <div className="text-xs font-thin text-slate-200 md:text-sm">
-            {author ? `@${author?.username || ""}` : ""}
-          </div>
+          <Link href={author ? `/@${author?.username || ""}` : "/"}>
+            <div className="text-xs font-thin text-slate-200 md:text-sm">
+              {author ? `@${author?.username || ""}` : ""}
+            </div>
+          </Link>
+
           <div className="mx-2 text-xs text-slate-200/50 md:text-sm">·</div>
-          <div className="ms-3 align-baseline text-xs text-slate-400 md:text-sm">
-            {formatDistanceToNow(new Date(post.createdAt), {
-              addSuffix: true,
-              locale: es,
-            })}
-          </div>
+
+          <Link href={`/post/${post.id}`}>
+            <div className="ms-0 align-baseline text-xs text-slate-400 md:text-sm">
+              {formatDistanceToNow(new Date(post.createdAt), {
+                addSuffix: true,
+                locale: es,
+              })}
+            </div>
+          </Link>
         </div>
-        <div className="">{post.content}</div>
+
+        <div>{post.content}</div>
       </div>
     </div>
   );
