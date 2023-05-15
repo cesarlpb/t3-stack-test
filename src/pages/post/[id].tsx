@@ -7,7 +7,7 @@ import { api } from "~/utils/api";
 import { Feed } from "~/components/feed";
 import { LoadingPage } from "~/components/loading";
 
-const Home: NextPage = () => {
+const SinglePostPage: NextPage = () => {
   const { user, isLoaded: userLoaded } = useUser();
   // Empieza a cargar los posts ASAP
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
@@ -81,7 +81,7 @@ const Home: NextPage = () => {
           </h1>
           <div className="flex flex-col gap-4 sm:grid-cols-2 md:gap-8"></div>
           <div className="flex w-3/4 flex-col items-center justify-center border-0 border-white lg:w-1/2">
-            <h3 className="pb-2 text-2xl text-slate-200">Últimos posts:</h3>
+            <h3 className="pb-2 text-2xl text-slate-200">Id</h3>
 
             {/* Cargando los posts usando Feed */}
             {previewData && <Feed postsNumber={3} />}
@@ -110,4 +110,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default SinglePostPage;

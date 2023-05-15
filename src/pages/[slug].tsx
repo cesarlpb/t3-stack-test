@@ -8,7 +8,7 @@ import { Feed } from "~/components/feed";
 import { LoadingPage } from "~/components/loading";
 import { CustomLink } from "~/components/customLink";
 
-const Home: NextPage = () => {
+const ProfilePage: NextPage = () => {
   const { user, isLoaded: userLoaded } = useUser();
   // Empieza a cargar los posts ASAP
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
@@ -83,7 +83,7 @@ const Home: NextPage = () => {
           <div className="flex flex-col gap-4 sm:grid-cols-2 md:gap-8"></div>
           
           <div className="flex w-3/4 flex-col items-center justify-center border-0 border-white lg:w-1/2">
-            <h3 className="pb-2 text-2xl text-slate-200">Últimos posts:</h3>
+            <h3 className="pb-2 text-2xl text-slate-200">Slug</h3>
 
             {/* Cargando los posts usando Feed */}
             {previewData && <Feed postsNumber={3} />}
@@ -102,8 +102,8 @@ const Home: NextPage = () => {
           </div>
           
           <div className="flex flex-row justify-between gap-x-2">
-            <CustomLink href={"/"} text="Volver"/>
-            <CustomLink href={"/posts"} text="Posts"/>
+            <CustomLink icon="home" href="/" text="Inicio" />
+            <CustomLink icon="arrow-left" href="/posts" text="Posts" />
           </div>
 
         </div>
@@ -112,4 +112,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default ProfilePage;
