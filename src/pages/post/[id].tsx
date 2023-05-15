@@ -6,6 +6,8 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 import { Feed } from "~/components/feed";
 import { LoadingPage } from "~/components/loading";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
 
 const SinglePostPage: NextPage = () => {
   const { user, isLoaded: userLoaded } = useUser();
@@ -21,7 +23,7 @@ const SinglePostPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>My Emojer App 😐 - A simple emoji-friendly app</title>
+        <title>Post🐵 - A simple emoji-friendly app</title>
         <meta
           name="description"
           content="A simple emoji-friendly app with NextJS, TS, Prisma, Planetscale, Vercel, Axiom, Tailwind and some other stuff -- probably, maybe."
