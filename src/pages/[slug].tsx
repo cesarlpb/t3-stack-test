@@ -10,10 +10,12 @@ import { createServerSideHelpers } from '@trpc/react-query/server';
 import { appRouter } from "~/server/api/root";
 import { prisma } from "~/server/db";
 import superjson from "superjson";
+import { PageLayout } from "~/components/layout";
+import Img from "next/image";
 
 const ProfilePage: NextPage<{ username : string }> = ({ username }) => {
-  const { user, isLoaded: userLoaded } = useUser();
-  console.log("User loaded: ", username);
+  const { user } = useUser(); // isLoaded: usedLoaded
+  // console.log("User loaded: ", username);
   // Empieza a cargar los posts ASAP
   const { data, isLoading } = api.profile.getUserByUsername.useQuery({
     username,
@@ -85,15 +87,28 @@ const ProfilePage: NextPage<{ username : string }> = ({ username }) => {
         </div>
         {/* Navbar */}
 
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <h1 className="text-5xl font-extrabold tracking-tight text-slate-200 sm:text-[4rem]">
+        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-8 ">
+          {/* <h1 className="text-5xl font-extrabold tracking-tight text-slate-200 sm:text-[4rem]">
             My <span className="text-[hsl(280,100%,70%)]">Emojer</span> App 😐
-          </h1>
+          </h1> */}
           <div className="flex flex-col gap-4 sm:grid-cols-2 md:gap-8"></div>
           
-          <div className="flex w-3/4 flex-col items-center justify-center border-0 border-white lg:w-1/2">
-            <h3 className="pb-2 text-2xl text-slate-200">{data.username}</h3>
-
+          <div className="flex w-3/4 flex-col items-center justify-center border-0 border-slate-400 lg:w-1/2">
+            <PageLayout>
+              <div className="flex flex-col w-screen h-24 border
+              border-slate-400 bg-slate-400 relative">
+                <Img className="-mb-[64px] absolute bottom-0 left-0 rounded-full 
+                border-4 border-black ml-4" src={data?.profileImageUrl} 
+                width={128} height={128} alt={`${data?.username ?? ""} foto de perfil`}/>
+              </div>
+              <div className="flex flex-col w-screen h-96">
+                <div className="flex flex-row h-[64px]"></div>  
+                <h3 className="flex flex-row p-4 text-2xl text-slate-200 font-bold">
+                  {`@${data.username ?? ""}`}
+                </h3>
+                <div className="w-full border border-slate-400"></div>
+              </div>
+            </PageLayout>
           </div>
           
           <div className="flex flex-row justify-between gap-x-2">
