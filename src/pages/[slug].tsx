@@ -11,18 +11,21 @@ import { CustomLink } from "~/components/customLink";
 const ProfilePage: NextPage = () => {
   const { user, isLoaded: userLoaded } = useUser();
   // Empieza a cargar los posts ASAP
-  const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
-  const previewData = data?.slice(0, 3) || [];
+  const { data, isLoading } = api.profile.getUserByUsername.useQuery({
+    username: "cesarlpb",
+  });
 
   // Se retorna un div vacío si el user no está cargado todavía
-  if (!userLoaded) {
-    return <div />;
+  if (isLoading) {
+    return <LoadingPage height={true} content="Cargando cositas...🤓" />;
   }
+
+  if (!data) return <div>404</div>;
 
   return (
     <>
       <Head>
-        <title>My Emojer App 😐 - A simple emoji-friendly app</title>
+        <title>Perfil🧐 - A simple emoji-friendly app</title>
         <meta
           name="description"
           content="A simple emoji-friendly app with NextJS, TS, Prisma, Planetscale, Vercel, Axiom, Tailwind and some other stuff -- probably, maybe."
@@ -75,6 +78,7 @@ const ProfilePage: NextPage = () => {
             </div>
           </div>
         </div>
+        {/* Navbar */}
 
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-5xl font-extrabold tracking-tight text-slate-200 sm:text-[4rem]">
@@ -83,22 +87,8 @@ const ProfilePage: NextPage = () => {
           <div className="flex flex-col gap-4 sm:grid-cols-2 md:gap-8"></div>
           
           <div className="flex w-3/4 flex-col items-center justify-center border-0 border-white lg:w-1/2">
-            <h3 className="pb-2 text-2xl text-slate-200">Slug</h3>
+            <h3 className="pb-2 text-2xl text-slate-200">{data.username}</h3>
 
-            {/* Cargando los posts usando Feed */}
-            {previewData && <Feed postsNumber={3} />}
-
-            {/* Solo aparece mientras se están cargando los posts 
-            height = true  -> h-screan  100vh
-            height = false -> h-full    100%
-            */}
-            {postsLoading && <LoadingPage height={false} />}
-
-            {!previewData && (
-              <div className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
-                No hay emojis, gg!🥶
-              </div>
-            )}
           </div>
           
           <div className="flex flex-row justify-between gap-x-2">
