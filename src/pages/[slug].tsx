@@ -12,6 +12,23 @@ import { prisma } from "~/server/db";
 import superjson from "superjson";
 import { PageLayout } from "~/components/layout";
 import Img from "next/image";
+import { PostView } from "~/components/postview";
+
+const ProfileFeed = (props: { userId : string }) => {
+  const {data, isLoading} = api.posts.getPostsByUserId.useQuery({ userId: props.userId });
+  
+  if(isLoading) return <LoadingPage height={true} content="Cargando cositas...🤓" />;
+  
+  if(!data || data?.length === 0) return <div>El usuario aún no ha creado posts😐</div>;
+
+  return (
+    <div className="flex flex-col gap-4">
+      {data.map((fullPost) => (
+        <PostView key={fullPost.post.id} {...fullPost} />
+      ))}
+    </div>
+  )
+};
 
 const ProfilePage: NextPage<{ username : string }> = ({ username }) => {
   const { user } = useUser(); // isLoaded: usedLoaded
@@ -32,7 +49,7 @@ const ProfilePage: NextPage<{ username : string }> = ({ username }) => {
   return (
     <>
       <Head>
-        <title>{username} | 🤠Emojer App - A simple emoji-friendly app</title>
+        <title>{`${username ?? ""} | 🤠Emojer App - A simple emoji-friendly app`}</title>
         <meta
           name="description"
           content="A simple emoji-friendly app with NextJS, TS, Prisma, Planetscale, Vercel, Axiom, Tailwind and some other stuff -- probably, maybe."
@@ -99,14 +116,19 @@ const ProfilePage: NextPage<{ username : string }> = ({ username }) => {
               border-slate-400 bg-slate-400 relative">
                 <Img className="-mb-[64px] absolute bottom-0 left-0 rounded-full 
                 border-4 border-black ml-4" src={data?.profileImageUrl} 
-                width={128} height={128} alt={`${data?.username ?? ""} foto de perfil`}/>
+                width={128} height={128} alt={`${data?.username ?? ""} foto de perfil`}
+                priority={true}/>
               </div>
               <div className="flex flex-col w-screen h-96">
                 <div className="flex flex-row h-[64px]"></div>  
                 <h3 className="flex flex-row p-4 text-2xl text-slate-200 font-bold">
                   {`@${data.username ?? ""}`}
                 </h3>
-                <div className="w-full border border-slate-400"></div>
+                <div className="w-full border border-slate-400 overflow-y-auto">
+                  <div className="w-1/2 mx-auto">
+                    <ProfileFeed userId={data.id} />
+                  </div>
+                </div>
               </div>
             </PageLayout>
           </div>

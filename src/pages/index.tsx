@@ -76,7 +76,7 @@ const Home: NextPage = () => {
           </div>
         </div>
 
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+        <div className="container flex flex-col items-center justify-center gap-12 px-4 pt-18 ">
           <h1 className="text-5xl font-extrabold tracking-tight text-slate-200 sm:text-[4rem]">
             My <span className="text-[hsl(280,100%,70%)]">Emojer</span> App 😐
           </h1>
