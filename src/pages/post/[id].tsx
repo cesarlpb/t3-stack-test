@@ -1,29 +1,29 @@
 import { SignOutButton } from "@clerk/clerk-react";
 import { SignInButton, useUser } from "@clerk/nextjs";
-import { type NextPage } from "next";
+import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { api } from "~/utils/api";
-import { Feed } from "~/components/feed";
 import { LoadingPage } from "~/components/loading";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faHome } from "@fortawesome/free-solid-svg-icons";
+import { generateSsgHelper } from "~/server/helpers/ssgHelper";
+import { PostView } from "~/components/postview";
 
-const SinglePostPage: NextPage = () => {
+const SinglePostPage: NextPage<{id: string}> = ({ id }) => {
   const { user, isLoaded: userLoaded } = useUser();
   // Empieza a cargar los posts ASAP
-  const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
-  const previewData = data?.slice(0, 3) || [];
+  const { data, isLoading: postsLoading } = api.posts.getPostbyId.useQuery({
+    id,
+  });
 
   // Se retorna un div vacío si el user no está cargado todavía
   if (!userLoaded) {
     return <div />;
   }
-
+  const title = `${data?.post?.content ?? ""} - ${data?.author?.username ?? ""}`;
   return (
     <>
       <Head>
-        <title>Post🐵 - A simple emoji-friendly app</title>
+        <title>{`${title ?? "Emojer"} 🐵 - A simple emoji-friendly app`}</title>
         <meta
           name="description"
           content="A simple emoji-friendly app with NextJS, TS, Prisma, Planetscale, Vercel, Axiom, Tailwind and some other stuff -- probably, maybe."
@@ -85,16 +85,15 @@ const SinglePostPage: NextPage = () => {
           <div className="flex w-3/4 flex-col items-center justify-center border-0 border-white lg:w-1/2">
             <h3 className="pb-2 text-2xl text-slate-200">Id</h3>
 
-            {/* Cargando los posts usando Feed */}
-            {previewData && <Feed postsNumber={3} />}
-
+            {data && <PostView {...data} />}
+            
             {/* Solo aparece mientras se están cargando los posts 
             height = true  -> h-screan  100vh
             height = false -> h-full    100%
             */}
             {postsLoading && <LoadingPage height={false} />}
 
-            {!previewData && (
+            {!data && (
               <div className="mx-auto my-1 flex w-10/12 flex-row items-center justify-center rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
                 No hay emojis, gg!🥶
               </div>
@@ -110,6 +109,23 @@ const SinglePostPage: NextPage = () => {
       </main>
     </>
   );
+};
+
+export const getStaticProps : GetStaticProps = async (context) => {
+  const helpers = generateSsgHelper();
+
+  const id = context.params?.id as string;
+  
+  if(typeof id !== 'string') throw new Error('No hay id');
+
+  await helpers.posts.getPostbyId.prefetch({id});
+
+  return{
+    props: {
+      trpcState: helpers.dehydrate(),
+      id
+    }
+  }
 };
 
 export default SinglePostPage;
