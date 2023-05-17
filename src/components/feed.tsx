@@ -39,6 +39,7 @@ export const ProfilePicture = ({
 };
 
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+
 export const PostView = (props: PostWithUser) => {
   const { post, author } = props;
   return (
@@ -49,7 +50,7 @@ export const PostView = (props: PostWithUser) => {
       key={post.id}
     >
       <ProfilePicture
-        authorImgUrl={author.profileImageUrl}
+        authorImgUrl={author?.profileImageUrl}
         width={48}
         height={48}
       />
@@ -63,9 +64,9 @@ export const PostView = (props: PostWithUser) => {
 
           <div className="mx-2 text-xs text-slate-200/50 md:text-sm">·</div>
 
-          <Link href={`/post/${post.id}`}>
+          <Link href={`/post/${post?.id}`}>
             <div className="ms-0 align-baseline text-xs text-slate-400 md:text-sm">
-              {formatDistanceToNow(new Date(post.createdAt), {
+              {formatDistanceToNow(new Date(post?.createdAt), {
                 addSuffix: true,
                 locale: es,
               })}
