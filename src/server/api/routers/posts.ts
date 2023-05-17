@@ -46,7 +46,9 @@ const addUserDataToPost = async (posts: Post[]) => {
       });
     return {
       post,
-      author: author,
+      author: {
+        ...author,
+      },
       // Alternativa de return:
       /*
       return {
@@ -69,6 +71,22 @@ const ratelimit = new Ratelimit({
 });
 
 export const postsRouter = createTRPCRouter({
+  getPostbyId: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!post)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post no encontrado",
+        });
+
+      return (await addUserDataToPost([post]))[0];
+    }),
+
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
       take: 100,
